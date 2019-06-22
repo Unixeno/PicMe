@@ -31,6 +31,6 @@ def after_request(response):
 
 @instance.route('/upload/<year>/<month>/<path:filename>')
 def uploaded_file(year, month, filename):
-    return send_from_directory('..\\upload/%s/%s/'% (year, month), filename)
+    return send_from_directory('../upload/%s/%s/'% (year, month), filename)
 
 
