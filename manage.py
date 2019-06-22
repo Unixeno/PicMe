@@ -10,7 +10,7 @@ if __name__ == '__main__':
     password = getpass.getpass()
 
     sha256 = hashlib.sha256()
-    sha256.update(password)
+    sha256.update(password.encode('utf8'))
     password_hash = sha256.hexdigest()
 
     db.init(DB_NAME, host=DB_HOST, user=DB_USER, password=DB_PASS)
