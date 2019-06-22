@@ -1,10 +1,14 @@
 from peewee import *
 import datetime
 import hashlib
-from playhouse.shortcuts import model_to_dict
+import json
+
+db = MySQLDatabase(None, charset='utf8mb4')
 
 
-db = MySQLDatabase(None)
+class JSONObject:
+    def __init__(self, value):
+        vars(self).update(value)
 
 
 class BaseModel(Model):
@@ -14,16 +18,24 @@ class BaseModel(Model):
 
 class Storage(BaseModel):
     id = AutoField(primary_key=True)
+    storage_name = CharField(max_length=64)
     url_prefix = CharField(max_length=128)
 
     backend_type = CharField(max_length=16)
     backend_config = CharField(max_length=1024)
 
+    @staticmethod
+    def get_all_storage():
+        storages = Storage.select()
+        for storage in storages:
+            storage.backend_config = json.loads(storage.backend_config, object_hook=JSONObject)
+        return storages
+
 
 class Group(BaseModel):
     id = AutoField(primary_key=True)
-    limit = BigIntegerField(default=0)          # 数量限制
-    file_size = IntegerField(default=0)         # 图片尺寸限制
+    limit = BigIntegerField(default=0)  # 数量限制
+    file_size = IntegerField(default=0)  # 图片尺寸限制
     backend_strategy = ForeignKeyField(Storage)
 
 
@@ -32,7 +44,7 @@ class User(BaseModel):
     email = CharField(max_length=64)
     password = FixedCharField(max_length=64)
     user_group = ForeignKeyField(Group, 'id', default=0)
-    size = BigIntegerField(default=0)            # 已用空间
+    size = BigIntegerField(default=0)  # 已用空间
     image_count = IntegerField(default=0)
     role = SmallIntegerField(default=1)  # 角色，0=管理员，1=用户
     reg_date = DateTimeField(default=datetime.datetime.now, formats='%Y-%m-%d %H:%M:%S')
@@ -48,7 +60,7 @@ class User(BaseModel):
             return None
 
     def get_user(self, user_id):
-        userinfo = self.select(User, Group).join(Group, on=(User.user_group == Group.id)).\
+        userinfo = self.select(User, Group).join(Group, on=(User.user_group == Group.id)). \
             where(User.id == user_id).get()
         return userinfo
 
@@ -85,4 +97,3 @@ class Images(BaseModel):
         images = self.select().where((Images.user_id == user_id) & (Images.deleted == 0))
 
         return images
-
