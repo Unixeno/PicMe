@@ -1,0 +1,5 @@
+.idea
+*/__pycache__
+.qiniu_pythonsdk_hostscache.json
+/instance/config.py
+/upload
