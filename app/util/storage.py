@@ -52,6 +52,10 @@ class StorageBase(object):
     def path_to_url(path: str):
         return path.replace(r'\\', '/').replace('\\', '/')
 
+    @staticmethod
+    def build_config(form):
+        return "{}"
+
 
 class LocalStorage(StorageBase):
     def store(self, file):
@@ -67,6 +71,12 @@ class LocalStorage(StorageBase):
 
     def get_full_path(self, path):
         return self._url_prefix + path
+
+    @staticmethod
+    def build_config(form):
+        return json.dumps({
+            "local": form['local-local']
+        })
 
 
 class QiniuStorage(StorageBase):

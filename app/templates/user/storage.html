@@ -1,0 +1,143 @@
+{% extends 'userbase.html' %}
+
+{% block title %}存储策略{% endblock %}
+
+{% block content %}
+
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-header">
+                    存储策列
+                </div>
+                <div class="card-body">
+                    <ul class="nav flex-column nav-pills">
+                        <li class="nav-item">
+                            <a class="nav-link active" data-toggle="pill" href="#default">默认存储</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-toggle="pill" href="#storage1">Link</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-footer text-right">
+                    <button class="btn btn-primary btn-sm"><i class="fas fa-plus"></i> 添加新策略</button>
+                </div>
+            </div>
+
+        </div>
+        <div class="col-md-9">
+            <div class="tab-content">
+                <div class="tab-pane active container">
+                    <div class="card">
+                        <div class="card-header">
+                            默认存储
+                        </div>
+                        <div class="card-body" id="storage0">
+                            <div class="form-group">
+                                <label>策略名</label>
+                                <input type="text" readonly class="form-control storage-name" value="默认存储"/>
+                            </div>
+                            <div class="form-group">
+                                <label>存储后端</label>
+                                <select class="form-control storage-type" autocomplete="off">
+                                    <option value="local"
+                                            {% if storages[0].backend_type == 'local' %}selected{% endif %}>本地存储
+                                    </option>
+                                    <option value="qiniu"
+                                            {% if storages[0].backend_type == 'qiniu' %}selected{% endif %}>七牛对象存储
+                                    </option>
+                                    <option value="qcos" {% if storages[0].backend_type == 'qcos' %}selected{% endif %}>
+                                        腾讯云COS
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>访问地址前缀</label>
+                                <input type="text" class="form-control url-prefix" placeholder="访问地址前缀"
+                                       value="{{ storages[0].url_prefix }}"/>
+                            </div>
+                            <div class="local-config config-area"
+                                 {% if storages[0].backend_type != 'local' %}style="display: none"{% endif %}>
+                                <div class="form-group">
+                                    <label>本地存储路径</label>
+                                    <input type="text" class="form-control local-local" name="local-local"
+                                           placeholder="本地存储路径"
+                                           value="{{ storages[0].backend_config.local }}"/>
+                                </div>
+                            </div>
+                            <div class="qiniu-config config-area"
+                                 {% if storages[0].backend_type != 'qiniu' %}style="display: none" {% endif %}>
+                                <div class="form-group">
+                                    <label>空间名称</label>
+                                    <input type="text" class="form-control qiniu-bucket" name="qiniu-bucket"
+                                           placeholder="bucket名称"
+                                           value="{{ storages[0].backend_config.bucket }}"/>
+                                </div>
+                                <div class="form-group">
+                                    <label>AccessKey</label>
+                                    <input type="password" class="form-control qiniu-ak" name="qiniu-ak"
+                                           placeholder="AccessKey"
+                                           value="{{ storages[0].backend_config.access_key }}"/>
+                                </div>
+                                <div class="form-group">
+                                    <label>SecretKey</label>
+                                    <input type="password" class="form-control qiniu-sk" name="qiniu-sk"
+                                           placeholder="SecretKey"
+                                           value="{{ storages[0].backend_config.secret_key }}"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer text-right">
+                        <button class="btn btn-success btn-sm" onclick="save_config(0)"><i
+                                class="fas fa-save"></i> 保存配置
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane container" id="storage1">
+
+            </div>
+        </div>
+    </div>
+    </div>
+
+{% endblock %}
+
+{% block ext_js %}
+    <script>
+        $(document).ready(function () {
+            $('.storage-type').change(function (element) {
+                let storage_type = $(this).parent().find(':selected').val();
+
+                $(this).parent().parent().find('.config-area').hide();
+
+                $(this).parent().parent().find('.' + storage_type + '-config').show();
+            });
+        });
+
+        function save_config(storage_id) {
+            let storage = '#storage' + storage_id;
+            let storage_name = $(storage).find('.storage-name').val();
+            let storage_type = $(storage).find(':selected').val();
+            let config_area = '.' + storage_type + '-config';
+            let data = {
+                storage_name: storage_name,
+                storage_type: storage_type,
+                storage_id: storage_id
+            };
+            $(storage).children(config_area).find('input').each(function () {
+                data[$(this).attr('name')] = $(this).val()
+            });
+            console.log(data);
+            $.post("{{ url_for('.update_storage') }}", data, function (ret) {
+                if (ret.err === 0) {
+                    alert("设置成功");
+                } else {
+                    alert(ret.info);
+                }
+            })
+        }
+    </script>
+{% endblock %}

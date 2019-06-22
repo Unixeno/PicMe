@@ -21,17 +21,16 @@ if __name__ == '__main__':
     User.drop_table()
     Images.drop_table()
     db.execute_sql("SET FOREIGN_KEY_CHECKS=1")
-
+    db.execute_sql("set session sql_mode='NO_AUTO_VALUE_ON_ZERO,NO_AUTO_CREATE_USER';")
     Storage.create_table()
-    Storage.create(url_prefix='http://127.0.0.1:5000/', backend_type='local', backend_config='{"local":"upload"}')
-
+    Storage.create(id=0, url_prefix='http://127.0.0.1:5000/', storage_name='默认存储', backend_type='local',
+                   backend_config='{"local":"upload"}')
 
     Group.create_table()
-    db.execute_sql("set session sql_mode='NO_AUTO_VALUE_ON_ZERO,NO_AUTO_CREATE_USER';")
-    Group.insert(id=0, backend_strategy=Storage.get_by_id(1)).execute()
+
+    Group.insert(id=0, backend_strategy=Storage.get_by_id(0)).execute()
 
     User.create_table()
     User.create(email=email, password=password_hash)
 
     Images.create_table()
-

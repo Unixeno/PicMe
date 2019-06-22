@@ -1,6 +1,6 @@
 from flask import Blueprint, request, render_template, url_for, session
 from flask import redirect, jsonify, current_app, g
-from ..util.storage import storage_factory
+from ..util.storage import storage_factory, LocalStorage, QiniuStorage
 from ..models import Storage, Images, User
 from ..util.helper import bytes_to_human
 
@@ -58,3 +58,30 @@ def upload():
         return jsonify({'err': 0, 'link': link, 'local_name': file.filename, 'size': file_length})
 
 
+@bp.route('/storage')
+def storage():
+    storages = Storage.get_all_storage()
+    return render_template('storage.html', storages=storages)
+
+
+@bp.route('/update_storage', methods=['POST'])
+def update_storage():
+    print(request.form)
+    if request.form['storage_type'] == 'local':
+        storage = Storage.get_by_id(request.form['storage_id'])
+        storage.storage_name = request.form['storage_name']
+        storage.backend_type = 'local'
+        storage.backend_config = LocalStorage.build_config(request.form)
+        storage.save()
+        return jsonify({'err': 0})
+    return jsonify({'err': 1, 'info': '不支持的存储类型'})
+
+
+@bp.route('/group')
+def group():
+    return render_template('group.html')
+
+
+@bp.route('/user')
+def user():
+    return render_template('user.html')
