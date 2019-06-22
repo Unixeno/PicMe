@@ -78,6 +78,22 @@
                 <i class="fas fa-fw fa-user-circle"></i>
                 <span>个人中心</span></a>
         </li>
+
+        <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('.storage') }}">
+                <i class="fas fa-fw fa-hdd"></i>
+                <span>存储策略</span></a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('.group') }}">
+                <i class="fas fa-fw fa-users-cog"></i>
+                <span>用户组</span></a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('.user') }}">
+                <i class="fas fa-fw fa-user-cog"></i>
+                <span>用户管理</span></a>
+        </li>
     </ul>
 
     <div id="content-wrapper">
