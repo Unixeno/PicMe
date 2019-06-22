@@ -1,0 +1,134 @@
+{% extends 'userbase.html' %}
+
+{% block title %}图片上传{% endblock %}
+
+{% block content %}
+    <!-- Area Chart Example-->
+    <div class="card mb-3">
+        <div class="card-header">
+            <i class="fas fa-cloud-upload-alt"></i>
+            图片上传
+        </div>
+        <div class="card-body">
+            <form action="" method="post" enctype="multipart/form-data">
+                <input id="upload" type="file" multiple name="image" accept="image/*">
+            </form>
+        </div>
+        <div class="card-footer small text-muted">上传限制：</div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <!-- Nav tabs -->
+            <ul class="nav nav-tabs" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" data-toggle="tab" href="#style-url">URL</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#style-html">HTML</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#style-markdown">Markdown</a>
+                </li>
+            </ul>
+            <!-- Tab panes -->
+            <div class="tab-content">
+                <div id="style-url" class="tab-pane active"><br>
+                    {#                    <div class="input-group mb-3">#}
+                    {#                        <input type="text" class="form-control" placeholder="Your Email">#}
+                    {#                        <div class="input-group-append">#}
+                    {#                            <button class="btn btn-success copy">复制</button>#}
+                    {#                        </div>#}
+                    {#                    </div>#}
+                </div>
+                <div id="style-html" class="tab-pane fade"><br>
+
+                </div>
+                <div id="style-markdown" class="tab-pane fade"><br>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block ext_css %}
+    <link href="{{ url_for('static', filename='vendor/bootstrap-fileinput/css/fileinput.min.css') }}" media="all"
+          rel="stylesheet" type="text/css"/>
+    <link href="{{ url_for('static', filename='vendor/toast/css/toast.css') }}" rel="stylesheet">
+
+{% endblock %}
+
+{% block ext_js %}
+    <script src="{{ url_for('static', filename='vendor/clipboard.js/dist/clipboard.min.js') }}"></script>
+
+    <script>
+        var clipboard = new ClipboardJS('.copy', {
+            text: function (trigger) {
+                console.log(trigger)
+                return $(trigger).data('text');
+            }
+        });
+        clipboard.on('success', function (e) {
+            console.log(e)
+        });
+
+        $(function () {
+            $("#upload").fileinput({
+                uploadUrl: "{{ url_for('user.upload') }}",
+                language: "zh",
+                theme: "fas",
+                maxFileSize: 5120,
+                maxFilesNum: 10,
+                maxFileCount: 10,
+                browseIcon: "<i class=\"fas fa-upload\"></i> ",
+                allowedFileExtensions: JSON.parse('["jpg","jpeg","gif","png","ico"]'),
+                ajaxSettings: {
+                    beforeSend: function (xhr, settings) {
+                        if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+                            xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token() }}");
+                        }
+                    }
+                },
+                mergeAjaxCallbacks: 'before',
+            }).on("fileuploaded", function (event, data, previewId, index) {
+                var form = data.form, files = data.files, extra = data.extra, response = data.response,
+                    reader = data.reader;
+                if (data.response.err === 0) {
+                    console.log(data)
+                    append_url(data.response.link)
+                    $.toast({
+                        title: data.response.local_name + ' 上传成功！',
+                        type: 'info',
+                        delay: 4000
+                    });
+                } else if (data.response.code === 500) {
+                    alert("上传发生错误");
+                }
+            });
+        });
+
+        function append_url(url) {
+            $('#style-url').append('<div class="input-group mb-3">\n' +
+                '                        <input type="text" class="form-control" readonly value="' + url + '">' +
+                '                        <div class="input-group-append">\n' +
+                '                            <button class="btn btn-success copy" data-text="' + url + '">复制</button>\n' +
+                '                        </div>\n' +
+                '                    </div>');
+        }
+
+        function append_html(url) {
+
+        }
+
+        function append_markdown(url) {
+
+        }
+    </script>
+    <script src="{{ url_for('static', filename='vendor/toast/js/toast.js') }}"></script>
+{#    <script src="{{ url_for('static', filename='vendor/bootstrap-fileinput/js/plugins/piexif.min.js') }}"></script>#}
+    <script src="{{ url_for('static', filename='vendor/bootstrap-fileinput/js/fileinput.min.js') }}"></script>
+    <!-- following theme script is needed to use the Font Awesome 5.x theme (`fas`) -->
+    <script src="{{ url_for('static', filename='vendor/bootstrap-fileinput/themes/fas/theme.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='vendor/bootstrap-fileinput/js/locales/zh.js') }}"></script>
+{% endblock %}

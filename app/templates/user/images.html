@@ -1,0 +1,107 @@
+{% extends 'userbase.html' %}
+
+{% block title %}浏览图片{% endblock %}
+{% block content %}
+    <div class="card">
+        <div class="card-header">
+            <i class="fas fa-images"></i> 图片浏览
+            <small class="text-info">您共有图片{{ g.userinfo.image_count }}张</small>
+        </div>
+        <div class="card-body">
+            <div id="image-box">
+                {% for image in images %}
+                <div class="box">
+                    <div class="image-container">
+                        <img id="image"
+                             src="{{ image.image_path }}">
+                    </div>
+                    <p class="filename">thisisfilename.png</p>
+                    <i class="fas fa-info-circle fa-fw image-info"></i>
+                </div>
+                {% endfor %}
+
+{#                <div class="box">#}
+{#                    <div class="image-container">#}
+{#                        <img id="image"#}
+{#                             src="http://127.0.0.1:5000/upload/2019/06/3efbcbc582562d1f15ea24b3aa55a8d90af28a08.jpg">#}
+{#                    </div>#}
+{#                    <p class="filename">thisisfilename.png</p>#}
+{#                    <i class="fas fa-info-circle fa-fw image-info"></i>#}
+{#                </div>#}
+            </div>
+        </div>
+        <div class="card-footer">
+
+        </div>
+    </div>
+{% endblock %}
+
+{% block ext_css %}
+    <style>
+        #image-box {
+        }
+
+        #image-box .image-container {
+            height: 100px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+
+        #image-box .box {
+            text-align: center;
+            transition: all 0.3s;
+            display: inline-block;
+            width: 128px;
+            height: 180px;
+            margin: 4px;
+            padding: 4px;
+            position: relative;
+        }
+
+        #image-box .box img {
+            max-height: 100%;
+            max-width: 100%;
+            position: relative;
+            top: 50%;
+            transform: translateY(-50%);
+            box-shadow: 0 0 1px rgba(0, 0, 0, .5);
+        }
+
+        #image-box p.filename {
+            text-align: center;
+            padding-top: 6px;
+            font-size: 12px;
+            word-break: break-all;
+            color: #555;
+        }
+
+        #image-box .image-info {
+            position: absolute;
+            right: 8px;
+            bottom: 8px;
+            color: rgb(0, 123, 255);
+            visibility: hidden;
+        }
+
+        #image-box .box:hover {
+            background-color: #eee;
+        }
+
+        #image-box .box:hover .image-info{
+            visibility: visible;
+        }
+    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='vendor/viewerjs/dist/viewer.min.css') }}"/>
+{% endblock %}
+
+{% block ext_js %}
+    <script src="{{ url_for('static', filename='vendor/viewerjs/dist/viewer.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='vendor/jquery-viewer/dist/jquery-viewer.min.js') }}"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('#image-box').viewer({});
+        });
+
+    </script>
+{% endblock %}

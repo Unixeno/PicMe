@@ -1,0 +1,74 @@
+{% extends 'userbase.html' %}
+
+{% block title %}个人中心{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-6 col-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    用户信息
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <tr>
+                                <td>用户邮箱</td>
+                                <td>{{ g.userinfo.email }}</td>
+                            </tr>
+                            <tr>
+                                <td>用户组</td>
+                                <td>{{ g.userinfo.user_group }}</td>
+                            </tr>
+                            <tr>
+                                <td>总图片数</td>
+                                <td>{{ g.userinfo.image_count }} 张</td>
+                            </tr>
+                            <tr>
+                                <td>图片所用空间</td>
+                                <td>{{ bytes_to_human(g.userinfo.size) }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-12">
+            <div class="card">
+                <div class="card-header bg-warning text-white">
+                    用户操作
+                </div>
+                <div class="card-body">
+                    <strong >清除图片</strong>
+                    <button class="btn btn-danger btn-block">清除图片</button>
+                    <small class="text-danger">此操作会删除此账号下的所有图片</small>
+                    <hr />
+                    <strong >删除账户</strong>
+                    <button class="btn btn-danger btn-block">删除账户</button>
+                    <small class="text-danger">此操作会该账户下的所有图片，然后删除账户</small>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block ext_css %}
+<link href="{{ url_for('static', filename='vendor/bootstrap-fileinput/css/fileinput.min.css')}}" media="all" rel="stylesheet" type="text/css" />
+
+{% endblock %}
+
+{% block ext_js %}
+    <script>
+    $(function () {
+        $("#upload").fileinput({
+            uploadUrl: "{{ url_for('user.upload') }}",
+            language: "zh",
+            showCaption: true,
+            dropZoneEnabled: true,
+        });
+    });
+    </script>
+    <script src="{{ url_for('static', filename='vendor/bootstrap-fileinput/js/fileinput.min.js') }}"></script>
+    <!-- following theme script is needed to use the Font Awesome 5.x theme (`fas`) -->
+    <script src="{{ url_for('static', filename='vendor/bootstrap-fileinput/themes/fas/theme.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='vendor/bootstrap-fileinput/js/locales/zh.js') }}"></script>
+{% endblock %}
