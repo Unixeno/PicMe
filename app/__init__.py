@@ -1,6 +1,6 @@
 from flask import Flask, send_from_directory, redirect
-from app.views import auth
-from app.views import user
+from .views import auth
+from .views import user
 from .models import db
 from flask_wtf.csrf import CSRFProtect, generate_csrf
 

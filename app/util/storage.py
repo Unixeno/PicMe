@@ -1,4 +1,4 @@
-from app.models import Storage as StorageModel
+from ..models import Storage as StorageModel
 import datetime
 import json
 import random
