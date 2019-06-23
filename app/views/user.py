@@ -60,12 +60,16 @@ def upload():
 
 @bp.route('/storage')
 def storage():
+    if g.userinfo.role != 0:
+        return jsonify({'err': 500, 'info': '你无权访问此页面'})
     storages = Storage.get_all_storage()
     return render_template('storage.html', storages=storages)
 
 
 @bp.route('/update_storage', methods=['POST'])
 def update_storage():
+    if g.userinfo.role != 0:
+        return jsonify({'err': 500, 'info': '你无权访问此页面'})
     try:
         storage = Storage.get_by_id(request.form['storage_id'])
     except DoesNotExist:

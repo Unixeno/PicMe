@@ -31,6 +31,6 @@ if __name__ == '__main__':
     Group.insert(id=0, backend_strategy=Storage.get_by_id(0)).execute()
 
     User.create_table()
-    User.create(email=email, password=password_hash)
+    User.create(email=email, role=0, password=password_hash)
 
     Images.create_table()

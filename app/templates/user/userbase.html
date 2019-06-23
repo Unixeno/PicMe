@@ -78,33 +78,34 @@
                 <i class="fas fa-fw fa-user-circle"></i>
                 <span>个人中心</span></a>
         </li>
-
-        <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('.storage') }}">
-                <i class="fas fa-fw fa-hdd"></i>
-                <span>存储策略</span></a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('.group') }}">
-                <i class="fas fa-fw fa-users-cog"></i>
-                <span>用户组</span></a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('.user') }}">
-                <i class="fas fa-fw fa-user-cog"></i>
-                <span>用户管理</span></a>
-        </li>
+        {% if g.userinfo.role == 0 %}
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('.storage') }}">
+                    <i class="fas fa-fw fa-hdd"></i>
+                    <span>存储策略</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('.group') }}">
+                    <i class="fas fa-fw fa-users-cog"></i>
+                    <span>用户组</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('.user') }}">
+                    <i class="fas fa-fw fa-user-cog"></i>
+                    <span>用户管理</span></a>
+            </li>
+        {% endif %}
     </ul>
 
     <div id="content-wrapper">
         <div class="container-fluid">
-{#            <!-- Breadcrumbs-->#}
-{#            <ol class="breadcrumb">#}
-{#                <li class="breadcrumb-item">#}
-{#                    <a href="#">Dashboard</a>#}
-{#                </li>#}
-{#                <li class="breadcrumb-item active">Overview</li>#}
-{#            </ol>#}
+            {#            <!-- Breadcrumbs-->#}
+            {#            <ol class="breadcrumb">#}
+            {#                <li class="breadcrumb-item">#}
+            {#                    <a href="#">Dashboard</a>#}
+            {#                </li>#}
+            {#                <li class="breadcrumb-item active">Overview</li>#}
+            {#            </ol>#}
             {% block content %}{% endblock %}
         </div>
         <!-- /.container-fluid -->
@@ -163,15 +164,15 @@
 
 <!-- Custom scripts for all pages-->
 <script src="{{ url_for('static', filename='js/sb-admin.min.js') }}"></script>
-    <script type="text/javascript">
-        $.ajaxSetup({
-            beforeSend: function(xhr, settings) {
-                if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
-                    xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token() }}");
-                }
+<script type="text/javascript">
+    $.ajaxSetup({
+        beforeSend: function (xhr, settings) {
+            if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token() }}");
             }
-        });
-    </script>
+        }
+    });
+</script>
 {% block ext_js %}{% endblock %}
 </body>
 
