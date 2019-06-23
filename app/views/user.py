@@ -1,7 +1,7 @@
 from flask import Blueprint, request, render_template, url_for, session
 from flask import redirect, jsonify, current_app, g
 from ..util.storage import storage_factory, LocalStorage, QiniuStorage
-from ..models import Storage, Images, User
+from ..models import Storage, Images, User, DoesNotExist
 from ..util.helper import bytes_to_human
 
 bp = Blueprint('user', __name__, url_prefix='/user', template_folder='../templates/user')
@@ -66,12 +66,20 @@ def storage():
 
 @bp.route('/update_storage', methods=['POST'])
 def update_storage():
-    print(request.form)
-    if request.form['storage_type'] == 'local':
+    try:
         storage = Storage.get_by_id(request.form['storage_id'])
-        storage.storage_name = request.form['storage_name']
+    except DoesNotExist:
+        return jsonify({'err': 1, 'info': '无效的存储id'})
+    storage.storage_name = request.form['storage_name']
+    storage.url_prefix = request.form['url_prefix']
+    if request.form['storage_type'] == 'local':
         storage.backend_type = 'local'
         storage.backend_config = LocalStorage.build_config(request.form)
+        storage.save()
+        return jsonify({'err': 0})
+    elif request.form['storage_type'] == 'qiniu':
+        storage.backend_type = 'qiniu'
+        storage.backend_config = QiniuStorage.build_config(request.form)
         storage.save()
         return jsonify({'err': 0})
     return jsonify({'err': 1, 'info': '不支持的存储类型'})

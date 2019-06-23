@@ -82,15 +82,22 @@ class LocalStorage(StorageBase):
 class QiniuStorage(StorageBase):
     def __init__(self, strategy: StorageModel):
         super(QiniuStorage, self).__init__(strategy)
-        self._q = qiniu.Auth(current_app.config.get('QINIU_ACCESSKEY'),
-                             current_app.config.get('QINIU_SECRETKEY'))
+        self._q = qiniu.Auth(self._backend_config['qiniu_accesskey'],
+                             self._backend_config['qiniu_secretkey'])
 
     def store(self, file):
         current_time = datetime.datetime.now()
         current_year = "%d" % current_time.year
         current_month = "%02d" % current_time.month
         file_path = '/'.join([current_year, current_month, StorageBase.hash_filename(file.filename)])
-        upload_token = self._q.upload_token(self._backend_config['bucket'], file_path, 600)
+        upload_token = self._q.upload_token(self._backend_config['qiniu_bucket'], file_path, 600)
         ret, info = qiniu.put_data(upload_token, file_path, file, mime_type=mimetypes.guess_type(file.filename)[0])
 
         return self.get_full_path(file_path), file_path
+
+    def build_config(form):
+        return json.dumps({
+            "qiniu_accesskey": form['qiniu-ak'],
+            "qiniu_secretkey": form['qiniu-sk'],
+            "qiniu_bucket": form['qiniu-bucket']
+        })

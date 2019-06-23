@@ -72,19 +72,19 @@
                                     <label>空间名称</label>
                                     <input type="text" class="form-control qiniu-bucket" name="qiniu-bucket"
                                            placeholder="bucket名称"
-                                           value="{{ storages[0].backend_config.bucket }}"/>
+                                           value="{{ storages[0].backend_config.qiniu_bucket }}"/>
                                 </div>
                                 <div class="form-group">
                                     <label>AccessKey</label>
                                     <input type="password" class="form-control qiniu-ak" name="qiniu-ak"
                                            placeholder="AccessKey"
-                                           value="{{ storages[0].backend_config.access_key }}"/>
+                                           value="{{ storages[0].backend_config.qiniu_accesskey }}"/>
                                 </div>
                                 <div class="form-group">
                                     <label>SecretKey</label>
                                     <input type="password" class="form-control qiniu-sk" name="qiniu-sk"
                                            placeholder="SecretKey"
-                                           value="{{ storages[0].backend_config.secret_key }}"/>
+                                           value="{{ storages[0].backend_config.qiniu_secretkey }}"/>
                                 </div>
                             </div>
                         </div>
@@ -119,10 +119,12 @@
 
         function save_config(storage_id) {
             let storage = '#storage' + storage_id;
+            let url_prefix = $(storage).find('.url-prefix').val();
             let storage_name = $(storage).find('.storage-name').val();
             let storage_type = $(storage).find(':selected').val();
             let config_area = '.' + storage_type + '-config';
             let data = {
+                url_prefix: url_prefix,
                 storage_name: storage_name,
                 storage_type: storage_type,
                 storage_id: storage_id
