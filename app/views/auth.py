@@ -60,5 +60,6 @@ def register():
 
 @bp.route('/logout', methods=['GET'])
 def logout():
-    pass
+    session.clear()
+    return redirect(url_for('.login'))
 
