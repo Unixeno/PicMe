@@ -96,7 +96,11 @@
                     reader = data.reader;
                 if (data.response.err === 0) {
                     console.log(data)
-                    append_url(data.response.link)
+                    {#append_url(data.response.link);#}
+                    append_link('#style-url', data.response.local_name, data.response.link, get_url);
+                    append_link('#style-html', data.response.local_name, data.response.link, get_html);
+                    append_link('#style-markdown', data.response.local_name, data.response.link, get_markdown_url);
+
                     $.toast({
                         title: data.response.local_name + ' 上传成功！',
                         type: 'info',
@@ -108,25 +112,31 @@
             });
         });
 
-        function append_url(url) {
-            $('#style-url').append('<div class="input-group mb-3">\n' +
-                '                        <input type="text" class="form-control" readonly value="' + url + '">' +
-                '                        <div class="input-group-append">\n' +
-                '                            <button class="btn btn-success copy" data-text="' + url + '">复制</button>\n' +
-                '                        </div>\n' +
-                '                    </div>');
+        function append_link(target, name, url, get_link) {
+            let link = get_link(url, name);
+            console.log(link);
+            $(target).append(`<div class="input-group mb-3">\n
+                                <input type="text" class="form-control" readonly value="${link}">\n
+                                <div class="input-group-append">\n
+                                    <button class="btn btn-success copy" data-text="${link}">复制</button>\n
+                                </div>\n
+                              </div>`);
         }
 
-        function append_html(url) {
-
+        function get_url(url, name) {
+            return url;
         }
 
-        function append_markdown(url) {
+        function get_html(url, name) {
+            return `&lt;img src=&quot;${url}&quot; alt=&quot;${name}&quot; title=&quot;${name}&quot;/&gt;`;
+        }
 
+        function get_markdown_url(url, name) {
+            return `![${name}](${url})`;
         }
     </script>
     <script src="{{ url_for('static', filename='vendor/toast/dist/toast.min.js') }}"></script>
-{#    <script src="{{ url_for('static', filename='vendor/bootstrap-fileinput/js/plugins/piexif.min.js') }}"></script>#}
+    {#    <script src="{{ url_for('static', filename='vendor/bootstrap-fileinput/js/plugins/piexif.min.js') }}"></script>#}
     <script src="{{ url_for('static', filename='vendor/bootstrap-fileinput/js/fileinput.min.js') }}"></script>
     <!-- following theme script is needed to use the Font Awesome 5.x theme (`fas`) -->
     <script src="{{ url_for('static', filename='vendor/bootstrap-fileinput/themes/fas/theme.min.js') }}"></script>
