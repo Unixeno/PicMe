@@ -59,23 +59,34 @@
 </nav>
 
 <div id="wrapper">
-
+{% set active_page = active_page|default('index') -%}
     <!-- Sidebar -->
     <ul class="sidebar navbar-nav">
-        <li class="nav-item">
+        <li class="nav-item {% if active_page=='index' %}active{% endif %}">
+            <a class="nav-link" href="{{ url_for('.index') }}">
+                <i class="fas fa-fw fa-tachometer-alt"></i>
+                <span>站点概况</span>
+            </a>
+        </li>
+        <li class="nav-item {% if active_page=='storage' %}active{% endif %}">
             <a class="nav-link" href="{{ url_for('.storage') }}">
                 <i class="fas fa-fw fa-hdd"></i>
                 <span>存储策略</span></a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item {% if active_page=='group' %}active{% endif %}">
             <a class="nav-link" href="{{ url_for('.group') }}">
                 <i class="fas fa-fw fa-users-cog"></i>
                 <span>用户组</span></a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item {% if active_page=='user' %}active{% endif %}">
             <a class="nav-link" href="{{ url_for('.user') }}">
                 <i class="fas fa-fw fa-user-cog"></i>
                 <span>用户管理</span></a>
+        </li>
+        <li class="nav-item {% if active_page=='setting' %}active{% endif %}">
+            <a class="nav-link" href="{{ url_for('.setting') }}">
+                <i class="fas fa-fw fa-cog"></i>
+                <span>站点设置</span></a>
         </li>
         <li class="nav-item">
             <a class="nav-link" href="{{ url_for('user.index') }}">

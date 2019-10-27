@@ -23,12 +23,12 @@ def index():
 
 @bp.route('/user')
 def user():
-    return render_template('index.html')
+    return render_template('admin/user.html')
 
 
 @bp.route('/group')
 def group():
-    pass
+    return render_template('admin/group.html')
 
 
 @bp.route('/storage')
@@ -56,3 +56,8 @@ def update_storage():
         storage.save()
         return jsonify({'err': 0})
     return jsonify({'err': 1, 'info': '不支持的存储类型'})
+
+
+@bp.route('/setting')
+def setting():
+    return render_template('admin/setting.html')

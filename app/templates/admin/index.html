@@ -1,1 +1,63 @@
 {% extends 'admin/base.html' %}
+{% set active_page = "index" %}
+
+{% block title %}站点概览{% endblock %}
+
+{% block ext_css %}
+    <style>
+        .summary {
+            text-align: center;
+            margin: 15px 35px;
+            background-color: #f7f7f7;
+            border: 1px solid #aaa;
+            border-radius: 8px;
+            padding-bottom: 20px;
+            padding-top: 15px;
+        }
+
+        .summary:hover > * {
+            transform: scale(1.1);
+            transition: all .2s;
+        }
+
+        .summary > .summary-title {
+            margin-top: 20px;
+            font-size: xx-large;
+        }
+
+        .summary > .summary-subtitle {
+            margin-top: 10px;
+            margin-bottom: 15px;
+            color: #888;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-3">
+            <div class="summary">
+                <div class="summary-title">233</div>
+                <div class="summary-subtitle">注册用户数</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="summary">
+                <div class="summary-title">233</div>
+                <div class="summary-subtitle">图片数</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="summary">
+                <div class="summary-title">233</div>
+                <div class="summary-subtitle">空间占用</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="summary">
+                <div class="summary-title">233</div>
+                <div class="summary-subtitle">访问量</div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
