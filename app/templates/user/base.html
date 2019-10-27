@@ -59,40 +59,45 @@
 </nav>
 
 <div id="wrapper">
-
+{% set active_page = active_page|default('index') -%}
     <!-- Sidebar -->
     <ul class="sidebar navbar-nav">
-        <li class="nav-item active">
+        <li class="nav-item {% if active_page=='index' %}active{% endif %}">
             <a class="nav-link" href="{{ url_for('.index') }}">
                 <i class="fas fa-fw fa-cloud-upload-alt"></i>
                 <span>上传图片</span>
             </a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item {% if active_page=='images' %}active{% endif %}">
             <a class="nav-link" href="{{ url_for('.images') }}">
                 <i class="fas fa-fw fa-images"></i>
                 <span>我的图片</span></a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item {% if active_page=='userinfo' %}active{% endif %}">
             <a class="nav-link" href="{{ url_for('.userinfo') }}">
                 <i class="fas fa-fw fa-user-circle"></i>
                 <span>个人中心</span></a>
         </li>
         {% if g.userinfo.role == 0 %}
+{#            <li class="nav-item">#}
+{#                <a class="nav-link" href="{{ url_for('admin.storage') }}">#}
+{#                    <i class="fas fa-fw fa-hdd"></i>#}
+{#                    <span>存储策略</span></a>#}
+{#            </li>#}
+{#            <li class="nav-item">#}
+{#                <a class="nav-link" href="{{ url_for('admin.group') }}">#}
+{#                    <i class="fas fa-fw fa-users-cog"></i>#}
+{#                    <span>用户组</span></a>#}
+{#            </li>#}
+{#            <li class="nav-item">#}
+{#                <a class="nav-link" href="{{ url_for('admin.user') }}">#}
+{#                    <i class="fas fa-fw fa-user-cog"></i>#}
+{#                    <span>用户管理</span></a>#}
+{#            </li>#}
             <li class="nav-item">
-                <a class="nav-link" href="{{ url_for('.storage') }}">
-                    <i class="fas fa-fw fa-hdd"></i>
-                    <span>存储策略</span></a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{ url_for('.group') }}">
-                    <i class="fas fa-fw fa-users-cog"></i>
-                    <span>用户组</span></a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{ url_for('.user') }}">
-                    <i class="fas fa-fw fa-user-cog"></i>
-                    <span>用户管理</span></a>
+                <a class="nav-link" href="{{ url_for('admin.index') }}">
+                    <i class="fas fa-fw fa-cog"></i>
+                    <span>管理后台</span></a>
             </li>
         {% endif %}
     </ul>

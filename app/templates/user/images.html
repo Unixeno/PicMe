@@ -1,4 +1,6 @@
-{% extends 'userbase.html' %}
+{% extends 'user/base.html' %}
+
+{% set active_page = "images" %}
 
 {% block title %}浏览图片{% endblock %}
 {% block content %}
@@ -10,28 +12,59 @@
         <div class="card-body">
             <div id="image-box">
                 {% for image in images %}
-                <div class="box">
-                    <div class="image-container">
-                        <img id="image"
-                             src="{{ image.image_path }}">
+                    <div class="box">
+                        <div class="image-container">
+                            <img src="{{ image.image_path }}">
+                        </div>
+                        <p class="filename">{{ image.path.rsplit('/', 1)[1] }}</p>
+                        <div class="custom-control custom-checkbox image-select image-button">
+                            <input type="checkbox" class="custom-control-input" id="img-select{{ image.id }}"
+                                   name="img-select">
+                            <label class="custom-control-label" for="img-select{{ image.id }}"></label>
+                        </div>
+                        <i class="fas fa-trash fa-fw image-delete image-button"></i>
+                        <i class="fas fa-info-circle fa-fw image-info image-button"
+                           onclick="show_img_info({{ image.id }})"></i>
                     </div>
-                    <p class="filename">thisisfilename.png</p>
-                    <i class="fas fa-info-circle fa-fw image-info"></i>
-                </div>
                 {% endfor %}
-
-{#                <div class="box">#}
-{#                    <div class="image-container">#}
-{#                        <img id="image"#}
-{#                             src="http://127.0.0.1:5000/upload/2019/06/3efbcbc582562d1f15ea24b3aa55a8d90af28a08.jpg">#}
-{#                    </div>#}
-{#                    <p class="filename">thisisfilename.png</p>#}
-{#                    <i class="fas fa-info-circle fa-fw image-info"></i>#}
-{#                </div>#}
             </div>
         </div>
         <div class="card-footer">
 
+        </div>
+    </div>
+    <!-- 模态框 -->
+    <div class="modal fade" id="img-info">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+
+                <!-- 模态框头部 -->
+                <div class="modal-header">
+                    <h4 class="modal-title">图片信息</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <p class="text-info">二维码</p>
+                        </div>
+                        <div class="col-md-9">
+                            <p>图片大小：<code>1235KB</code></p>
+                            <p>上传时间：<code>2019</code></p>
+                            <p>图片地址：</p>
+                            <div class="input-group">
+                                <input value="asfgafghfg" class="form-control"/>
+                                <div class="input-group-append">
+                                    <button class="btn btn-success copy">复制</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
         </div>
     </div>
 {% endblock %}
@@ -80,16 +113,42 @@
             right: 8px;
             bottom: 8px;
             color: rgb(0, 123, 255);
+        }
+
+        #image-box .image-delete {
+            position: absolute;
+            right: 32px;
+            bottom: 8px;
+            color: red;
+        }
+
+        #image-box .image-select {
+            position: absolute;
+            left: 8px;
+            bottom: 4px;
+        }
+
+        #image-box .box .image-button {
             visibility: hidden;
+            cursor: pointer;
         }
 
         #image-box .box:hover {
             background-color: #eee;
         }
 
-        #image-box .box:hover .image-info{
+        #image-box .box:hover .image-button {
             visibility: visible;
         }
+
+        #image-box .box.active .image-button {
+            visibility: visible;
+        }
+
+        #image-box .box.active {
+            background-color: #eee;
+        }
+
     </style>
     <link rel="stylesheet" href="{{ url_for('static', filename='vendor/viewerjs/dist/viewer.min.css') }}"/>
 {% endblock %}
@@ -101,7 +160,25 @@
     <script>
         $(document).ready(function () {
             $('#image-box').viewer({});
+            $('input:checked').each(function (index) {
+                console.log(index)
+                $(this).parents('.box').addClass('active');
+            });
+            $('.image-select').change(function () {
+                if ($(this).children('input').is(':checked')) {
+                    $(this).parents('.box').addClass('active');
+                } else {
+                    $(this).parents('.box').removeClass('active');
+                }
+            })
         });
 
+        function show_img_info(img_id) {
+            $.get("{{ url_for('.get_img_info') }}", {img_id: img_id}, function (ret) {
+                if (ret.err === 0) {
+                    $('#img-info').modal("show");
+                }
+            })
+        }
     </script>
 {% endblock %}

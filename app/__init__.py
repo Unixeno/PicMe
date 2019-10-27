@@ -1,16 +1,20 @@
 from flask import Flask, send_from_directory, redirect
-from .views import auth
-from .views import user
+from .views import (
+    auth,
+    admin,
+    user
+)
 from .models import db
 from flask_wtf.csrf import CSRFProtect, generate_csrf
 
-instance = Flask(__name__, instance_relative_config=True)
+instance = Flask(__name__, instance_relative_config=True, template_folder='templates')
 csrf = CSRFProtect()
 csrf.init_app(instance)
 
 instance.config.from_pyfile('config.py')
 
 instance.register_blueprint(auth.bp)
+instance.register_blueprint(admin.bp)
 instance.register_blueprint(user.bp)
 
 

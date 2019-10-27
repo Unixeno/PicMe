@@ -6,8 +6,7 @@ from wtforms import StringField, PasswordField, ValidationError
 from wtforms.validators import Email, DataRequired, Length
 
 
-bp = Blueprint('auth', __name__, url_prefix='/auth',
-               template_folder='../templates/auth')
+bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 
 class RegisterForm(FlaskForm):
@@ -43,7 +42,7 @@ def login():
                 return jsonify({'err': 0})
             return jsonify({'err': 1, 'info': '用户名或密码不正确'})
     else:
-        return render_template('login.html')
+        return render_template('auth/login.html')
 
 
 @bp.route('/register', methods=['POST', 'GET'])
@@ -55,11 +54,10 @@ def register():
             user.register(email=form.email.data, password=form.password.data)
             return jsonify({'err': 0})
     else:
-        return render_template('register.html')
+        return render_template('auth/register.html')
 
 
 @bp.route('/logout', methods=['GET'])
 def logout():
     session.clear()
     return redirect(url_for('.login'))
-
